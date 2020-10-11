@@ -3,17 +3,19 @@ package net.jmb.tuto.spring.service;
 import java.util.List;
 
 import net.jmb.tuto.spring.entity.Article;
-import net.jmb.tuto.spring.repository.ArticleRepository;
+import net.jmb.tuto.spring.repository.ArticleRepositoryInterface;
 
-public class CatalogService {
+public class CatalogBasicService extends CatalogAbstractService implements CatalogServiceInterface {
 
 	
-	// KO : le formattage de la sortie est à placer dans un contrôleur plutôt qu'un service (interaction utilisateur)
-	
+	public CatalogBasicService(ArticleRepositoryInterface articleRepository) {
+		super(articleRepository);
+	}
+
+
+	@Override
 	public String afficherListeArticles() {
-
-		ArticleRepository articleRepository = new ArticleRepository(); // KO
-
+		
 		List<Article> allArticles = articleRepository.getAllArticles();
 		StringBuffer sb = new StringBuffer();
 		int i = 0;
@@ -24,9 +26,8 @@ public class CatalogService {
 	}
 	
 		
+	@Override
 	public Article chercherArticle(int numArticle) {
-		
-		ArticleRepository articleRepository = new ArticleRepository(); // KO
 		
 		return articleRepository.findArticle(numArticle-1);
 	}

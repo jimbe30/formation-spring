@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.jmb.tuto.spring.entity.Article;
 
-public class ArticleRepository {
+public class ArticleMemoryRepository implements ArticleRepositoryInterface {
 	
 	static final List<Article> CATALOGUE_ARTICLES = new ArrayList<>();
 	static {
@@ -19,10 +19,12 @@ public class ArticleRepository {
 		
 	}
 	
+	@Override
 	public Article findArticle(int num) {
 		return (num >= 0 && num < CATALOGUE_ARTICLES.size()) ? CATALOGUE_ARTICLES.get(num) : null;
 	}
 	
+	@Override
 	public List<Article> getAllArticles() {
 		return CATALOGUE_ARTICLES;
 	}

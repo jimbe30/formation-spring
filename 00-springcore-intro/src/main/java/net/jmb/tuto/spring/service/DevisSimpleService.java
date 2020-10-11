@@ -10,10 +10,27 @@ import net.jmb.tuto.spring.entity.Client;
 import net.jmb.tuto.spring.entity.DetailDevis;
 import net.jmb.tuto.spring.entity.Devis;
 
-public class DevisService {
+public class DevisSimpleService implements DevisServiceInterface {
 
 	static final int DUREE_VALIDITE_DEVIS = 10;
 	
+	CatalogServiceInterface catalogService;
+	
+	
+	public DevisSimpleService(CatalogServiceInterface catalogService) {
+		super();
+		this.catalogService = catalogService;
+	}
+
+	public CatalogServiceInterface getCatalogService() {
+		return catalogService;
+	}
+
+	public void setCatalogService(CatalogServiceInterface catalogService) {
+		this.catalogService = catalogService;
+	}
+
+	@Override
 	public Devis calculerDevis(String nomClient, List<Integer> numArticles) {
 
 		Devis devis = new Devis();
@@ -21,8 +38,6 @@ public class DevisService {
 		devis.setDate(new Date());
 		devis.setDuree(DUREE_VALIDITE_DEVIS);
 		devis.setClient(new Client(nomClient, null));
-
-		CatalogService catalogService = new CatalogService(); // KO
 		
 		// Calcul quantité par article
 		Map<Integer, Integer> articlesEtQuantites = new Hashtable<>(); // key: numéro d'article -> value: quantité
@@ -53,6 +68,7 @@ public class DevisService {
 		return devis;
 	}
 	
+	@Override
 	public DetailDevis calculerDetail(Article article, int quantite) {
 		
 		if (article != null && quantite > 0) {

@@ -12,7 +12,17 @@ public class Devis {
 	protected Date date;
 	protected int duree;	
 	protected List<DetailDevis> listeDetailsDevis;
+	protected int remise;
 	protected double montantTotal;
+	protected double montantRemise;
+
+	public double getMontantRemise() {
+		return montantRemise;
+	}
+
+	public void setMontantRemise(double montantRemise) {
+		this.montantRemise = montantRemise;
+	}
 
 	public Devis() {
 		super();
@@ -28,6 +38,14 @@ public class Devis {
 
 	public double getMontantTotal() {
 		return montantTotal;
+	}
+
+	public int getRemise() {
+		return remise;
+	}
+
+	public void setRemise(int remise) {
+		this.remise = remise;
 	}
 
 	public void setMontantTotal(double montantTotal) {
@@ -71,7 +89,8 @@ public class Devis {
 
 	@Override
 	public String toString() {
-		return "Devis [client=" + client + ", date=" + getDate() + ", duree=" + duree + ", total=" + montantTotal + ", detailsDevis=" + listeDetailsDevis + "]";
+		return "Devis [client=" + client + ", date=" + getDate() + ", remise=" + montantRemise + " (" + remise + "%), total à payer=" + montantTotal 
+				+ ", detailsDevis=" + listeDetailsDevis + "]";
 	}
 
 }
