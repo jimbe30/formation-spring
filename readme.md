@@ -36,3 +36,9 @@ Pour répondre aux objectifs et remédier aux problèmes, des principes s'impose
 
 ### Solution
 > Spring prétend être un conteneur IoC léger qui facilite la mise en place d'une architecture robuste selon les principes SOLID
+
+## 01-springcore-ioc : Inversion de contrôle avec Spring
+
+Ce projet explique les fondamentaux du framework Spring: 
+- Mise en place de l'inversion de contrôle par configuration du conteneur Spring
+
