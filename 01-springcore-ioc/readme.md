@@ -1,4 +1,5 @@
 
+
 ## Commit : 02_démarrage projet Spring
 
 ### 1. Initialisation 
@@ -33,4 +34,32 @@ Il a été développé par la fondation Apache dans le but de standardiser et d'
 
 > **Le projet généré par Spring initializr est un projet maven qui référence toutes les dépendances vers les librairies nécessaires à l'utilisation du framework**
 > Il s'agit d'un template (modèle) d'application SpringBoot préconfigurée et prête à l'emploi 
+
+## Commit : 03_création des contrôleurs (principe de responsabilité unique)
+
+> Le code d'interaction avec les utilisateurs est déplacé dans les contrôleurs
+
+Dans la classe **`Application.java`** ne figure plus que le code responsable du flot d'exécution
+- Instanciation des classes d'implémentation en fonction du contexte
+- Mise en relation des objets par injection de dépendances
+
+**net.jmb.tuto.spring.Application**
+
+```java
+	...
+	// On identifie le client
+	ClientController clientController = new ClientController();
+	Client client = clientController.identifierClient();
+
+	// On propose un choix dans la liste des articles disponibles
+	ArticleController articleController = new ArticleController();
+	articleController.setCatalogService(catalogService);
+	List<Integer> numArticles = articleController.choisirArticles();
+
+	// On renvoie le devis correspondant
+	DevisController devisController = new DevisController();
+	devisController.setDevisService(devisService);
+	devisController.afficherDevis(client, numArticles);
+	...
+```
 
