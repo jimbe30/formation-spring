@@ -9,6 +9,10 @@ import net.jmb.tuto.spring.repository.ArticleRepositoryInterface;
 
 public class CatalogDetailService extends CatalogBasicService implements CatalogServiceInterface {
 	
+	public CatalogDetailService() {
+		super();
+	}
+	
 	public CatalogDetailService(ArticleRepositoryInterface articleRepository) {
 		super(articleRepository);
 	}

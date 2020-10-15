@@ -16,6 +16,9 @@ public class DevisSimpleService implements DevisServiceInterface {
 	
 	CatalogServiceInterface catalogService;
 	
+	public DevisSimpleService() {
+		super();
+	}
 	
 	public DevisSimpleService(CatalogServiceInterface catalogService) {
 		super();

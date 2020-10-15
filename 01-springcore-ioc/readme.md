@@ -175,3 +175,50 @@ La structure de l'application est clairement documentée dans les fichiers de co
 - Inconvénients :
 	- Travail fastidieux de déclaration des beans dans les fichiers de configuration : procédé lourd pour les grosses applications
 	- Forte dépendance de l'application vis-à-vis du framework Spring (notamment sur les classes de type `ApplicationContext`)
+
+## Commit : 05_Réduire la config xml - Injection par 'autowire'
+
+### 1. Au niveau d'un bean
+
+On peut indiquer dans la déclaration d'un bean que l'on souhaite injecter ses dépendances par leur nom ou par leur type
+On utilise pour ceci l'attribut `autowire` dans la balise `<bean>`
+L'injection de dépendance se fait alors automatiquement sans avoir besoin de les spécifier explicitement
+
+> **L'autowiring ne fonctionne qu'avec les setters et pas les constructeurs** : il faut donc un constructeur sans argument pour les beans considérés
+
+**/src/main/resources/applicationContext-1.xml**
+
+```xml
+	...
+
+	<bean id="articleRepository" class="net.jmb.tuto.spring.repository.ArticleMemoryRepository"/>	
+	<bean id="catalogService" class="net.jmb.tuto.spring.service.CatalogBasicService" autowire="byName"/>
+	<bean id="devisService" class="net.jmb.tuto.spring.service.DevisSimpleService" autowire="byName"/>
+	
+```
+
+### 2. Au niveau global
+
+On peut indiquer pour tous les beans que l'on souhaite injecter leur dépendances par leur nom ou par leur type
+On utilise pour ceci l'attribut `default-autowire="byName"` dans la balise `<beans>`
+
+**/src/main/resources/applicationContext-2.xml**
+
+```xml
+<beans
+   ...
+   default-autowire="byName">
+	
+	<bean id="articleRepository" class="net.jmb.tuto.spring.repository.ArticleDatabaseRepository"/>	
+	<bean id="catalogService" class="net.jmb.tuto.spring.service.CatalogDetailService"/>
+	<bean id="clientService" class="net.jmb.tuto.spring.service.ClientSimpleService" />	
+	<bean id="devisService" class="net.jmb.tuto.spring.service.DevisRemiseService" />
+	...
+</beans>	
+```
+
+### 3. Résultat
+
+- Beaucoup moins de xml à écrire et à lire : moins contraignant
+- Mais l'application est moins compréhensible puisque les dépendances ne sont pas décrites : plus difficile à maintenir
+

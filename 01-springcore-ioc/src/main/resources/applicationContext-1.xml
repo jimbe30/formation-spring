@@ -14,34 +14,18 @@
 		- Chaque bean instancié dans le conteneur a un identifiant qui doit être unique 
 		  (il est déduit du nom de la classe s'il n'est pas explicitement renseigné) 
 		- Chaque bean peut ainsi être injecté dans les beans dépendants 
-		  On utilise pour ceci l'attribut 'ref' dans les balises <constructor-arg> ou <propery>
+		  On utilise pour ceci l'attribut autowire="byName" dans les balises <bean>
 	 -->
 	 
 	<bean id="articleRepository" class="net.jmb.tuto.spring.repository.ArticleMemoryRepository"/>
-	
-	<bean id="catalogService" class="net.jmb.tuto.spring.service.CatalogBasicService">
-		<constructor-arg ref="articleRepository"/>
-	</bean>
-	
-	<bean id="devisService" class="net.jmb.tuto.spring.service.DevisSimpleService">
-		<constructor-arg ref="catalogService"/>
-	</bean>
-	
+	<bean id="catalogService" class="net.jmb.tuto.spring.service.CatalogBasicService" autowire="byName"/>
+	<bean id="devisService" class="net.jmb.tuto.spring.service.DevisSimpleService" autowire="byName"/>
 	
 	<!-- 
 	 	Configuration des contrôleurs valables quel que soit le contexte
-	 -->
-	 
+	 -->	 
 	<bean class="net.jmb.tuto.spring.controller.ClientController"/>
-	
-	<bean class="net.jmb.tuto.spring.controller.ArticleController">
-		<property name="catalogService" ref="catalogService"/>
-	</bean>
-	
-	<bean class="net.jmb.tuto.spring.controller.DevisController">
-		<property name="devisService" ref="devisService"/>
-	</bean>
-
-	 
+	<bean class="net.jmb.tuto.spring.controller.ArticleController" autowire="byName"/>
+	<bean class="net.jmb.tuto.spring.controller.DevisController" autowire="byName"/>	 
 
 </beans>

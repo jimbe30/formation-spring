@@ -8,7 +8,11 @@ public class DevisRemiseService extends DevisSimpleService implements DevisServi
 
 	ClientServiceInterface clientService;
 	int remise = 10; // en vrai ça devrait être paramétré quelque part
+	
 
+	public DevisRemiseService() {
+		super();
+	}
 
 	public DevisRemiseService(CatalogServiceInterface catalogService, ClientServiceInterface clientService) {
 		super(catalogService);
