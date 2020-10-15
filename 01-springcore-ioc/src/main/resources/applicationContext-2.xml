@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<!-- 
+	 	Configuration des classes d'implémentation relatives au contexte 2
+	 -->
+	 
+	<bean id="articleRepository" class="net.jmb.tuto.spring.repository.ArticleDatabaseRepository"/>
+	
+	<bean id="catalogService" class="net.jmb.tuto.spring.service.CatalogDetailService">
+		<constructor-arg ref="articleRepository"/>
+	</bean>
+	
+	<bean id="clientService" class="net.jmb.tuto.spring.service.ClientSimpleService" />
+	
+	<bean id="devisService" class="net.jmb.tuto.spring.service.DevisRemiseService">
+		<constructor-arg ref="catalogService"/>
+		<constructor-arg ref="clientService"/>
+	</bean>
+	
+	
+	<!-- 
+	 	Configuration des contrôleurs valables quel que soit le contexte
+	 -->
+	 
+	<bean class="net.jmb.tuto.spring.controller.ClientController"/>
+	
+	<bean class="net.jmb.tuto.spring.controller.ArticleController">
+		<property name="catalogService" ref="catalogService"/>
+	</bean>
+	
+	<bean class="net.jmb.tuto.spring.controller.DevisController">
+		<property name="devisService" ref="devisService"/>
+	</bean>
+
+	 
+
+</beans>

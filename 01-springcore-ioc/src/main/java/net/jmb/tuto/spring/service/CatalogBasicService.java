@@ -2,6 +2,8 @@ package net.jmb.tuto.spring.service;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.jmb.tuto.spring.entity.Article;
 import net.jmb.tuto.spring.repository.ArticleRepositoryInterface;
 
@@ -20,7 +22,8 @@ public class CatalogBasicService extends CatalogAbstractService implements Catal
 		StringBuffer sb = new StringBuffer();
 		int i = 0;
 		for (Article article : allArticles) {
-			sb.append(article.getLibelle()).append(" [").append(++i).append("]").append("\n");
+			String libelle = StringUtils.rightPad(article.getLibelle(), 30);
+			sb.append(libelle).append(" [").append(++i).append("]").append("\n");
 		}
 		return sb.toString();
 	}
