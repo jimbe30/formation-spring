@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd"
+        
+        default-autowire="byName">
+        
+    <!-- 
+	 	On déclare vouloir accéder aux variables d'environnement et aux properties
+	 -->
+    <context:property-placeholder location="classpath:/application.properties"/>
+	
+	<!-- 
+	 	On importe la config spécifique au contexte en utilisant la variable d'environnement 
+	 	${contexte} qui doit être fournie en ligne de commande ( -Dcontexte=2 par exemple )
+	 -->
+	<import resource="classpath:/applicationContext-${contexte}.xml"/>
+	
+	<!-- 
+	 	Configuration commune des contrôleurs valables quel que soit le contexte
+	 -->
+	<bean class="net.jmb.tuto.spring.controller.ClientController"/>
+	<bean class="net.jmb.tuto.spring.controller.ArticleController"/>
+	<bean class="net.jmb.tuto.spring.controller.DevisController"/>
+
+</beans>
