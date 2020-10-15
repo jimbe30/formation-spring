@@ -6,6 +6,10 @@ public abstract class CatalogAbstractService implements CatalogServiceInterface 
 
 	ArticleRepositoryInterface articleRepository;
 	
+	public CatalogAbstractService() {
+		super();
+	}
+	
 	public CatalogAbstractService(ArticleRepositoryInterface articleRepository) {
 		super();
 		this.articleRepository = articleRepository;
