@@ -5,10 +5,15 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context.xsd"
-        
-        default-autowire="byName">
-        
+        http://www.springframework.org/schema/context/spring-context.xsd">
+    <!-- -->
+    
+    <!--
+    	Permet l'injection par annotation @Autowired dans les classes ayant des dépendances sur les beans définis ici
+    	Permet d'alléger le code car les getters et setters des classes dépendantes sont facultatifs
+     -->
+    <context:annotation-config/>    
+
     <!-- 
 	 	On déclare vouloir accéder aux variables d'environnement et aux properties
 	 -->

@@ -14,7 +14,6 @@
 		- Chaque bean instancié dans le conteneur a un identifiant qui doit être unique 
 		  (il est déduit du nom de la classe s'il n'est pas explicitement renseigné) 
 		- Chaque bean peut ainsi être injecté dans les beans dépendants 
-		  On utilise pour ceci l'attribut autowire="byName" dans les balises <bean>
 	 -->
 	 
 	<bean id="articleRepository" class="net.jmb.tuto.spring.repository.ArticleMemoryRepository"/>

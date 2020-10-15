@@ -5,13 +5,10 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context.xsd"
-        
-        default-autowire="byName">
+        http://www.springframework.org/schema/context/spring-context.xsd">
 	
 	<!-- 
 	 	Configuration des classes d'implémentation relatives au contexte 2
-	 	L'injection de dépendances se fait automatiquement via l'attribut default-autowire="byName" de la balise <beans> 
 	 -->	 
 	<bean id="articleRepository" class="net.jmb.tuto.spring.repository.ArticleDatabaseRepository"/>	
 	<bean id="catalogService" class="net.jmb.tuto.spring.service.CatalogDetailService"/>

@@ -319,3 +319,6 @@ Fichier **src/main/resources/applicationContext-2.xml**
 - La configuration est mieux structurée : factorisation des classes communes
 - Les valeurs ne sont plus définies en dur dans les programmes mais injectées à partir de fichiers de propriétés
 
+
+## Commit : 07_Injection par annotation @Autowired
+

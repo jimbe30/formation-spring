@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import net.jmb.tuto.spring.service.CatalogServiceInterface;
 
 public class ArticleController {
 	
+	@Autowired
 	CatalogServiceInterface catalogService;
 	
 	
