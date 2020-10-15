@@ -16,13 +16,18 @@
 	<bean id="articleRepository" class="net.jmb.tuto.spring.repository.ArticleDatabaseRepository"/>	
 	<bean id="catalogService" class="net.jmb.tuto.spring.service.CatalogDetailService"/>
 	<bean id="clientService" class="net.jmb.tuto.spring.service.ClientSimpleService" />	
-	<bean id="devisService" class="net.jmb.tuto.spring.service.DevisRemiseService" />
 	
 	<!-- 
-	 	Configuration des contrôleurs valables quel que soit le contexte
-	 -->	 
-	<bean class="net.jmb.tuto.spring.controller.ClientController"/>
-	<bean class="net.jmb.tuto.spring.controller.ArticleController"/>
-	<bean class="net.jmb.tuto.spring.controller.DevisController"/>
+	 	Le taux de remise défini dans application.properties est accédé avec sa clé ${app.contexte2.remise}
+	 	et injecté dans la propriété 'remise' de la classe DevisRemiseService
+	 -->	
+	<bean id="devisService" class="net.jmb.tuto.spring.service.DevisRemiseService">
+		<property name="remise" value="${app.contexte2.remise}"/>
+	</bean>
+	
+	<!-- 
+	 	La configuration des contrôleurs valables quel que soit le contexte n' plus ici 
+	 	car elle est faite dans le fichier commun applicationContext.xml
+	 -->	
 
 </beans>

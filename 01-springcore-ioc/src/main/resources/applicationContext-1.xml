@@ -22,10 +22,9 @@
 	<bean id="devisService" class="net.jmb.tuto.spring.service.DevisSimpleService" autowire="byName"/>
 	
 	<!-- 
-	 	Configuration des contrôleurs valables quel que soit le contexte
+	 	La configuration des contrôleurs valables quel que soit le contexte est 
+	 	faite dans le fichier commun applicationContext.xml
 	 -->	 
-	<bean class="net.jmb.tuto.spring.controller.ClientController"/>
-	<bean class="net.jmb.tuto.spring.controller.ArticleController" autowire="byName"/>
-	<bean class="net.jmb.tuto.spring.controller.DevisController" autowire="byName"/>	 
+
 
 </beans>
