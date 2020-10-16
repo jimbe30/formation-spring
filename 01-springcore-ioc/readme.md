@@ -19,6 +19,7 @@ Renseigner le formulaire
 ```
 
 Une fois le projet généré, le dézipper dans le répertoire de formation.
+
 Puis l'importer en tant que projet maven
 
 ### 2. Projet maven
@@ -32,11 +33,12 @@ Il a été développé par la fondation Apache dans le but de standardiser et d'
 - Guide utilisateur de référence : [Maven Getting Started](http://maven.apache.org/guides/getting-started/index.html) 
 
 > **Le projet généré par Spring initializr est un projet maven qui référence toutes les dépendances vers les librairies nécessaires à l'utilisation du framework**
+
 > Il s'agit d'un template (modèle) d'application SpringBoot préconfigurée et prête à l'emploi 
 
 ## Commit : 03_création des contrôleurs (principe de responsabilité unique)
 
-> Le code d'interaction avec les utilisateurs est déplacé dans les contrôleurs
+### 1. Déplacement du code d'interaction avec les utilisateurs dans les contrôleurs
 
 Dans la classe **`Application.java`** ne figure plus que le code responsable du flot d'exécution
 - Instanciation des classes d'implémentation en fonction du contexte
@@ -61,6 +63,20 @@ Dans la classe **`Application.java`** ne figure plus que le code responsable du 
 	devisController.afficherDevis(client, numArticles);
 	...
 ```
+
+### 2. Diagramme de classes schématisé
+
+Au final, les diagrammes ci-dessous font apparaître les dépendances entre composants de l'application
+
+- **Diagramme de classes sur la fonctionnalité 'catalogue'**
+
+![](diagram/CatalogModel.jpg)
+
+- **Diagramme de classes sur la fonctionnalité 'devis'**
+
+![](diagram/DevisModel.jpg)
+
+
 
 ## Commit : 04_Conteneur Spring - configuration full xml
 
@@ -322,3 +338,42 @@ Fichier **src/main/resources/applicationContext-2.xml**
 
 ## Commit : 07_Injection par annotation @Autowired
 
+### 1. Balise <context:annotation-config/>  dans applicationContext.xml  
+
+Cette balise permet l'injection par annotation dans les classes dépendantes.
+
+```xml
+   <!-- on a supprimé l'attribut default-autowire="byName" de la balise beans -->
+    
+    <!--
+    	Permet l'injection par annotation @Autowired dans les classes ayant des dépendances sur les beans définis ici
+    	Les getters et setters des classes dépendantes sont facultatifs
+     -->
+    <context:annotation-config/>    
+```
+
+### 2. Annotation @Autowired dans les classes dépendantes
+
+Cette annotation se place au niveau d'un attribut, d'un setter ou d'un constructeur.
+
+Elle indique au conteneur Spring d'injecter le bean ayant le même type que la propriété concernée.
+
+> **Toutes les classes ayant des dépendances sur des beans gérés par le conteneur Spring doivent être annotées**
+
+> Ou bien sinon il faut injecter les dépendances dans la config xml
+
+Si on se réfère au diagramme de classes (commit 03), ces classes sont :
+- `ArticleController`
+- `CatalogAbstractService`
+- `DevisController`
+- `DevisSimpleService`
+- `DevisRemiseService`
+
+Exemple sur la classe `DevisController`
+
+```java
+public class DevisController {
+	
+	@Autowired
+	DevisServiceInterface devisService;
+```

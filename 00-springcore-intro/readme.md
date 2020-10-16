@@ -38,7 +38,8 @@ L'application a pour fonction d'établir un devis à un client en fonction d'art
 
 ### 2. Réalisation
 
-Séquence de dépendances
+**Séquence de dépendances**
+
 ```java
 Application.main()
 ^ CatalogService.afficherListeArticles()
@@ -47,12 +48,12 @@ Application.main()
   ^ CatalogService.chercherArticle(numArticle)
     ^ ArticleRepository.findArticle()
 ```
-Façon de faire
+**Façon de procéder**
 - Chaque dépendance est une classe concrète **explicitement déclarée**
 - Chaque dépendance est **instanciée par l'objet qui l'utilise** au moment où il en a besoin
 
 Résultat
-L'application fonctionne mais elle est peu flexible 
+L'application fonctionne mais elle est peu flexible
 
 ## Commit : 01_programmation par contrat et inversion de contrôle
 
