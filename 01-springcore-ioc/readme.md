@@ -1,6 +1,5 @@
 
-
-## Commit : 02_démarrage projet Spring
+## Branche 02_springcore_ioc_démarrage
 
 ### 1. Initialisation 
 
@@ -11,13 +10,14 @@ Renseigner le formulaire
 - Langage Java
 - SpringBoot version 2.3.4
 - Métadonnées maven
+
 ```
 	- Group:     net.jmb.tuto.spring
 	- Articfact: 01-spingcore-ioc
 	- Package:   net.jmb.tuto.spring
 	- Packaging: Jar
 	- Java:      8
-```	
+```
 
 Une fois le projet généré, le dézipper dans le répertoire de formation.
 Puis l'importer en tant que projet maven
@@ -33,11 +33,12 @@ Il a été développé par la fondation Apache dans le but de standardiser et d'
 - Guide utilisateur de référence : [Maven Getting Started](http://maven.apache.org/guides/getting-started/index.html) 
 
 > **Le projet généré par Spring initializr est un projet maven qui référence toutes les dépendances vers les librairies nécessaires à l'utilisation du framework**
+
 > Il s'agit d'un template (modèle) d'application SpringBoot préconfigurée et prête à l'emploi 
 
-## Commit : 03_création des contrôleurs (principe de responsabilité unique)
+## Branche 03_création_des_contrôleurs (principe de responsabilité unique)
 
-> Le code d'interaction avec les utilisateurs est déplacé dans les contrôleurs
+### 1. Déplacement du code d'interaction avec les utilisateurs dans les contrôleurs
 
 Dans la classe **`Application.java`** ne figure plus que le code responsable du flot d'exécution
 - Instanciation des classes d'implémentation en fonction du contexte
@@ -62,4 +63,18 @@ Dans la classe **`Application.java`** ne figure plus que le code responsable du 
 	devisController.afficherDevis(client, numArticles);
 	...
 ```
+
+### 2. Diagramme de classes schématisé
+
+Au final, les diagrammes ci-dessous font apparaître les dépendances entre composants de l'application
+
+- **Diagramme de classes sur la fonctionnalité 'catalogue'**
+
+![](diagram/CatalogModel.jpg)
+
+- **Diagramme de classes sur la fonctionnalité 'devis'**
+
+![](diagram/DevisModel.jpg)
+
+
 
