@@ -54,7 +54,7 @@ Façon de faire
 Résultat
 L'application fonctionne mais elle est peu flexible 
 
-## Commit : 01_programmation par contrat et inversion de contrôle
+## Branche 01_programmation_par_contrat_et_inversion_de_contrôle
 
 ### 1. Demande
 Un nouveau magasin est intéressé par l'application mais souhaite modifier son comportement
