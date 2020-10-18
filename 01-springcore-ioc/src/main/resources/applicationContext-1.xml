@@ -17,8 +17,8 @@
 	 -->
 	 
 	<bean id="articleRepository" class="net.jmb.tuto.spring.repository.ArticleMemoryRepository"/>
-	<bean id="catalogService" class="net.jmb.tuto.spring.service.CatalogBasicService" autowire="byName"/>
-	<bean id="devisService" class="net.jmb.tuto.spring.service.DevisSimpleService" autowire="byName"/>
+	<bean id="catalogService" class="net.jmb.tuto.spring.service.CatalogBasicService"/>
+	<bean id="devisService" class="net.jmb.tuto.spring.service.DevisSimpleService"/>
 	
 	<!-- 
 	 	La configuration des contrôleurs valables quel que soit le contexte est 

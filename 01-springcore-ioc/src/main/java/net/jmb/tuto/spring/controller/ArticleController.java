@@ -4,19 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 
 import net.jmb.tuto.spring.service.CatalogServiceInterface;
 
 public class ArticleController {
 	
-	@Autowired
-	CatalogServiceInterface catalogService;
-	
+	@Resource(name = "catalogService")
+	CatalogServiceInterface service;
 	
 	public List<Integer> choisirArticles() {
 
-		if (catalogService != null) {
+		if (service != null) {
 			
 			List<Integer> numArticles = new ArrayList<Integer>();
 			
@@ -26,7 +25,7 @@ public class ArticleController {
 			System.out.println("   -> Tapez les n° correspondants puis n'importe quelle lettre pour continuer");
 			System.out.println();
 
-			System.out.println(catalogService.afficherListeArticles());
+			System.out.println(service.afficherListeArticles());
 
 			// On lit les n° d'articles choisis
 
@@ -40,16 +39,6 @@ public class ArticleController {
 			return numArticles;
 		}
 		return null;
-	}
-
-
-	public CatalogServiceInterface getCatalogService() {
-		return catalogService;
-	}
-
-
-	public void setCatalogService(CatalogServiceInterface catalogService) {
-		this.catalogService = catalogService;
 	}
 
 }

@@ -267,13 +267,8 @@ Ces variables sont définies sous la forme **-D**xxx=yyy, avec:
 - xxx = nom de la variable
 - yyy = valeur de la variable  
 
-<<<<<<< HEAD
-Ces variables peuvent être ensuite utilisées dans la config Spring :
-- la valeur de la variable à utilisée est déclarée sous la forme ${xxx}
-=======
 Les variables d'environnement peuvent être utilisées dans la config Spring :
 - la valeur de la variable à utiliser est déclarée sous la forme ${xxx}
->>>>>>> refs/heads/06_optimer_la_configuration_xml
 
 **Exemple**
 
@@ -343,7 +338,7 @@ Fichier **src/main/resources/applicationContext-2.xml**
 
 ## Branche 07_injection_par_annotation
 
-### 1. Balise <context:annotation-config/>  dans applicationContext.xml  
+### 1. Balise `<context:annotation-config/>` dans applicationContext.xml  
 
 Cette balise permet l'injection de dépendances par annotation dans les classes dépendantes.
 
@@ -374,7 +369,7 @@ Si on se réfère au diagramme de classes (Branche 03_création_des_contrôleurs
 - `DevisSimpleService`
 - `DevisRemiseService`
 
-Exemple sur la classe `DevisController`
+Exemple sur la classe **net.jmb.tuto.spring.controller.DevisController**
 
 ```java
 public class DevisController {
@@ -386,12 +381,25 @@ public class DevisController {
 ### 3. Conclusion
 
 Résultat :
-- l'injection de dépendance est à nouveau documentée contrairement à l'autowiring xml
-- elle est déclarée dans le code
-	- avantage : lisible immédiatement lorsqu'on travaille sur les composants
-	- inconvénient : crée une dépendance forte sur le framework Spring 
+- L'injection de dépendance est à nouveau documentée contrairement à l'autowiring xml
+- Elle est déclarée dans le code
+	- Avantage : lisible immédiatement lorsqu'on travaille sur les composants
+	- Inconvénient : crée une dépendance forte sur le framework Spring 
 	
 Pour pallier l'inconvénient de la dépendance forte sur le framework Spring, il est possible d'utiliser l'annotation JEE standard `@Resource`.
 
 Cette annotation outre le fait d'être un standard JEE présente aussi l'avantage de pouvoir désigner par son nom le bean qu'on souhaite injecter.
+
+Exemple sur la classe **net.jmb.tuto.spring.controller.ArticleController**
+
+```java
+public class ArticleController {
+	
+	@Resource(name = "catalogService")
+	CatalogServiceInterface service;	
+	...
+}
+```
+
+
  
