@@ -1,4 +1,4 @@
-## Commit : 02_démarrage projet Spring
+## Branche 02_springcore_ioc_démarrage
 
 ### 1. Initialisation 
 
@@ -32,11 +32,12 @@ Il a été développé par la fondation Apache dans le but de standardiser et d'
 - Guide utilisateur de référence : [Maven Getting Started](http://maven.apache.org/guides/getting-started/index.html) 
 
 > **Le projet généré par Spring initializr est un projet maven qui référence toutes les dépendances vers les librairies nécessaires à l'utilisation du framework**
+
 > Il s'agit d'un template (modèle) d'application SpringBoot préconfigurée et prête à l'emploi 
 
-## Commit : 03_création des contrôleurs (principe de responsabilité unique)
+## Branche 03_création_des_contrôleurs (principe de responsabilité unique)
 
-> Le code d'interaction avec les utilisateurs est déplacé dans les contrôleurs
+### 1. Déplacement du code d'interaction avec les utilisateurs dans les contrôleurs
 
 Dans la classe **`Application.java`** ne figure plus que le code responsable du flot d'exécution
 - Instanciation des classes d'implémentation en fonction du contexte
@@ -62,23 +63,30 @@ Dans la classe **`Application.java`** ne figure plus que le code responsable du 
 	...
 ```
 
-## Commit : 04_Conteneur Spring - configuration full xml
+### 2. Diagramme de classes schématisé
+
+Au final, les diagrammes ci-dessous font apparaître les dépendances entre composants de l'application
+
+- **Diagramme de classes sur la fonctionnalité 'catalogue'**
+
+![](diagram/CatalogModel.jpg)
+
+- **Diagramme de classes sur la fonctionnalité 'devis'**
+
+![](diagram/DevisModel.jpg)
+
+
+## Branche 04_spring_configuration_full_xml
 
 ### 1. Fichiers de type applicationContext.xml
 
 La déclaration des classes concrètes à implémenter n'est plus faite dans notre application mais dans des fichiers de configuration.
+
 C'est le framework Spring qui s'occupe d'instancier les classes et d'injecter les dépendances à partir de cette config.
 
 On renseigne 2 fichiers de configuration dans `/src/main/resources` :
 - `applicationContext-1.xml` : Configuration des classes d'implémentation relatives au contexte 1 (beans au sens Spring)
 - `applicationContext-2.xml` : Configuration relative au contexte 2
-
-
-- Peu importe l'ordre dans lequel sont déclarés les beans, Spring en fait son affaire
-- Il faut renseigner le nom qualifié de la classe 
-- Chaque bean instancié dans le conteneur a un identifiant qui doit être unique (il est déduit du nom de la classe s'il n'est pas explicitement renseigné)
-- Chaque bean peut ainsi être injecté dans les beans dépendants 
-  On utilise pour ceci l'attribut `ref` dans les balises `<constructor-arg>` ou `<property>`
 
 **/src/main/resources/applicationContext-1.xml**
 
@@ -124,6 +132,8 @@ On renseigne 2 fichiers de configuration dans `/src/main/resources` :
 		<property name="devisService" ref="devisService"/>
 	</bean>
 ```
+
+A retenir :
 - Peu importe l'ordre dans lequel sont déclarés les beans, Spring en fait son affaire
 - Il faut renseigner le nom qualifié de la classe 
 - Chaque bean instancié dans le conteneur a un identifiant qui doit être unique (il est déduit du nom de la classe s'il n'est pas explicitement renseigné)
@@ -133,7 +143,9 @@ On renseigne 2 fichiers de configuration dans `/src/main/resources` :
 ### 2. Application.java
 
 Notre application ne s'occupe plus ni d'instancier les objets, ni d'injecter leurs dépendances.
+
 Elles se contente de récupérer les objets dont elle a besoin pour effectuer ses traitement à partir du conteneur Spring.
+
 Ces objets sont en nombre considérablement réduit :
 - Dans notre exemple, il s'agit uniquement des contrôleurs
 - Tous les services et repositories nécessaires à leur fonctionnement ont été injectés par Spring à partir de la configuration
@@ -165,9 +177,10 @@ Ces objets sont en nombre considérablement réduit :
 	devisController.afficherDevis(client, numArticles);
 ```
 
-### 3. Bilan
+### 3. Résultat
 
-Le code java est épuré car la mécanique d'assemblage des composants est prise en charge par Spring
+Le code java est épuré car la mécanique d'assemblage des composants est prise en charge par Spring.
+
 La structure de l'application est clairement documentée dans les fichiers de configuration
 - Avantages : 
 	- Code lisible et structuré : facilite la maintenance
