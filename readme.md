@@ -1,11 +1,11 @@
 ﻿## Structure du cours : organisation repository Git
 
-- Chaque concept important est matérialisé par un projet, auquel correspond une branche dédiée 
+- Chaque concept important est matérialisé par un projet
 	- Les concepts sont abordés par ordre
-	- Les projets et branches correspondantes sont donc numérotés en fonction
-- Chaque notion rattachée à un concept fait l'objet d'un développement et d'un commit spécifique
+	- Les projets correspondants sont donc numérotés en fonction
+- Chaque notion rattachée à un concept fait l'objet d'une branche spécifique
 	- Les notions sont abordées par ordre
-	- Les commits correspondants sont numérotés en fonction
+	- Les branches correspondantes sont numérotées en fonction
 	
 La suite du document liste les projets et décrit brièvement les concepts associés.
 Pour des explications détaillées, se référer au contenu de chaque projet  
