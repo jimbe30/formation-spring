@@ -23,7 +23,7 @@ net.jmb.tuto.spring    // racine
  |__ service           // traitements métiers
 ```
 
-## Commit : 00_programmation naturelle
+## Branche 00_programmation_naturelle
 
 ### 1. Demande
 L'application a pour fonction d'établir un devis à un client en fonction d'articles choisis dans un catalogue
