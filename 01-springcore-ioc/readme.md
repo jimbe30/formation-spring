@@ -189,13 +189,15 @@ La structure de l'application est clairement documentée dans les fichiers de co
 	- Travail fastidieux de déclaration des beans dans les fichiers de configuration : procédé lourd pour les grosses applications
 	- Forte dépendance de l'application vis-à-vis du framework Spring (notamment sur les classes de type `ApplicationContext`)
 
-## Commit : 05_Réduire la config xml - Injection par 'autowire'
+## Branche 05_réduire_la_config_xml_par_autowire
 
 ### 1. Au niveau d'un bean
 
-On peut indiquer dans la déclaration d'un bean que l'on souhaite injecter ses dépendances par leur nom ou par leur type
-On utilise pour ceci l'attribut `autowire` dans la balise `<bean>`
-L'injection de dépendance se fait alors automatiquement sans avoir besoin de les spécifier explicitement
+On peut indiquer dans la déclaration d'un bean que l'on souhaite injecter ses dépendances par leur nom ou par leur type.
+
+On utilise pour ceci l'attribut `autowire` dans la balise `<bean>`.
+
+L'injection de dépendance se fait alors automatiquement sans avoir besoin de les spécifier explicitement.
 
 > **L'autowiring ne fonctionne qu'avec les setters et pas les constructeurs** : il faut donc un constructeur sans argument pour les beans considérés
 
@@ -207,13 +209,13 @@ L'injection de dépendance se fait alors automatiquement sans avoir besoin de le
 	<bean id="articleRepository" class="net.jmb.tuto.spring.repository.ArticleMemoryRepository"/>	
 	<bean id="catalogService" class="net.jmb.tuto.spring.service.CatalogBasicService" autowire="byName"/>
 	<bean id="devisService" class="net.jmb.tuto.spring.service.DevisSimpleService" autowire="byName"/>
-	
 ```
 
 ### 2. Au niveau global
 
-On peut indiquer pour tous les beans que l'on souhaite injecter leur dépendances par leur nom ou par leur type
-On utilise pour ceci l'attribut `default-autowire="byName"` dans la balise `<beans>`
+On peut indiquer pour tous les beans que l'on souhaite injecter leur dépendances par leur nom ou par leur type.
+
+On utilise pour ceci l'attribut `default-autowire="byName"` dans la balise `<beans>`.
 
 **/src/main/resources/applicationContext-2.xml**
 
