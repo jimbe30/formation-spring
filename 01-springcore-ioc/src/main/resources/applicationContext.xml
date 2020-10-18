@@ -10,7 +10,7 @@
         default-autowire="byName">
         
     <!-- 
-	 	On déclare vouloir accéder aux variables d'environnement et aux properties
+	 	On déclare accéder aux valeurs du fichier de propriétés
 	 -->
     <context:property-placeholder location="classpath:/application.properties"/>
 	
