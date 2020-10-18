@@ -1,5 +1,5 @@
 
-## Commit : 02_démarrage projet Spring
+## Branche 02_springcore_ioc_démarrage
 
 ### 1. Initialisation 
 
