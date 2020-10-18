@@ -181,7 +181,7 @@ Ces objets sont en nombre considérablement réduit :
 	devisController.afficherDevis(client, numArticles);
 ```
 
-### 3. Bilan
+### 3. Résultat
 
 Le code java est épuré car la mécanique d'assemblage des composants est prise en charge par Spring
 La structure de l'application est clairement documentée dans les fichiers de configuration
@@ -266,8 +266,7 @@ Avec:
 - yyy = valeur de la variable  
 
 Ces variables peuvent être ensuite utilisées dans la config Spring :
-- la balise `<context:property-placeholder/>` indique qu'on souhaite utiliser des variables
-- la valeur de la variable est sous la forme ${xxx}
+- la valeur de la variable à utilisée est déclarée sous la forme ${xxx}
 
 **Exemple**
 
@@ -281,11 +280,6 @@ Il permet l'import de la config spécifique au contexte
 
 ```xml
 	<!-- 
-	 	On déclare vouloir accéder aux variables d'environnement
-	 -->
-	<context:property-placeholder/>	
-	
-	<!-- 
 	 	On importe la config spécifique au contexte en utilisant la variable d'environnement 
 	 	${contexte} qui doit être fournie en ligne de commande ( -Dcontexte=2 par exemple )
 	 -->
@@ -295,7 +289,11 @@ Il permet l'import de la config spécifique au contexte
 ### 3. Injecter des données de fichiers .properties
 
 On peut stocker des données de configuration dans des fichiers properties (typiquement `application.properties`).
-Ces données sont ensuite accessibles dans la config Spring sous la forme ${xxx}
+
+Ces données sont accessibles dans la config Spring :
+- la balise `<context:property-placeholder location="????"/>` indique qu'on souhaite utiliser des propriétés de configuration
+- la valeur de la propriété est ensuite accessible sous la forme ${xxx}
+
 
 **Exemple**
 
@@ -311,7 +309,7 @@ Fichier **src/main/resources/applicationContext.xml**
 
 ```xml
 	<!-- 
-	 	On déclare vouloir accéder aux variables d'environnement et aux properties
+	 	On déclare accéder aux valeurs du fichier de propriétés
 	 -->
    <context:property-placeholder location="classpath:/application.properties"/>
 ```
