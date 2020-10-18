@@ -1,4 +1,4 @@
-## Commit : 02_démarrage projet Spring
+## Branche 02_springcore_ioc_démarrage
 
 ### 1. Initialisation 
 
@@ -36,7 +36,7 @@ Il a été développé par la fondation Apache dans le but de standardiser et d'
 
 > Il s'agit d'un template (modèle) d'application SpringBoot préconfigurée et prête à l'emploi 
 
-## Commit : 03_création des contrôleurs (principe de responsabilité unique)
+## Branche 03_création_des_contrôleurs (principe de responsabilité unique)
 
 ### 1. Déplacement du code d'interaction avec les utilisateurs dans les contrôleurs
 
@@ -77,24 +77,17 @@ Au final, les diagrammes ci-dessous font apparaître les dépendances entre comp
 ![](diagram/DevisModel.jpg)
 
 
-
-## Commit : 04_Conteneur Spring - configuration full xml
+## Branche 04_spring_configuration_full_xml
 
 ### 1. Fichiers de type applicationContext.xml
 
 La déclaration des classes concrètes à implémenter n'est plus faite dans notre application mais dans des fichiers de configuration.
+
 C'est le framework Spring qui s'occupe d'instancier les classes et d'injecter les dépendances à partir de cette config.
 
 On renseigne 2 fichiers de configuration dans `/src/main/resources` :
 - `applicationContext-1.xml` : Configuration des classes d'implémentation relatives au contexte 1 (beans au sens Spring)
 - `applicationContext-2.xml` : Configuration relative au contexte 2
-
-
-- Peu importe l'ordre dans lequel sont déclarés les beans, Spring en fait son affaire
-- Il faut renseigner le nom qualifié de la classe 
-- Chaque bean instancié dans le conteneur a un identifiant qui doit être unique (il est déduit du nom de la classe s'il n'est pas explicitement renseigné)
-- Chaque bean peut ainsi être injecté dans les beans dépendants 
-  On utilise pour ceci l'attribut `ref` dans les balises `<constructor-arg>` ou `<property>`
 
 **/src/main/resources/applicationContext-1.xml**
 
@@ -140,6 +133,8 @@ On renseigne 2 fichiers de configuration dans `/src/main/resources` :
 		<property name="devisService" ref="devisService"/>
 	</bean>
 ```
+
+A retenir :
 - Peu importe l'ordre dans lequel sont déclarés les beans, Spring en fait son affaire
 - Il faut renseigner le nom qualifié de la classe 
 - Chaque bean instancié dans le conteneur a un identifiant qui doit être unique (il est déduit du nom de la classe s'il n'est pas explicitement renseigné)
@@ -149,7 +144,9 @@ On renseigne 2 fichiers de configuration dans `/src/main/resources` :
 ### 2. Application.java
 
 Notre application ne s'occupe plus ni d'instancier les objets, ni d'injecter leurs dépendances.
+
 Elles se contente de récupérer les objets dont elle a besoin pour effectuer ses traitement à partir du conteneur Spring.
+
 Ces objets sont en nombre considérablement réduit :
 - Dans notre exemple, il s'agit uniquement des contrôleurs
 - Tous les services et repositories nécessaires à leur fonctionnement ont été injectés par Spring à partir de la configuration
@@ -183,7 +180,8 @@ Ces objets sont en nombre considérablement réduit :
 
 ### 3. Résultat
 
-Le code java est épuré car la mécanique d'assemblage des composants est prise en charge par Spring
+Le code java est épuré car la mécanique d'assemblage des composants est prise en charge par Spring.
+
 La structure de l'application est clairement documentée dans les fichiers de configuration
 - Avantages : 
 	- Code lisible et structuré : facilite la maintenance
@@ -192,13 +190,15 @@ La structure de l'application est clairement documentée dans les fichiers de co
 	- Travail fastidieux de déclaration des beans dans les fichiers de configuration : procédé lourd pour les grosses applications
 	- Forte dépendance de l'application vis-à-vis du framework Spring (notamment sur les classes de type `ApplicationContext`)
 
-## Commit : 05_Réduire la config xml - Injection par 'autowire'
+## Branche 05_réduire_la_config_xml_par_autowire
 
 ### 1. Au niveau d'un bean
 
-On peut indiquer dans la déclaration d'un bean que l'on souhaite injecter ses dépendances par leur nom ou par leur type
-On utilise pour ceci l'attribut `autowire` dans la balise `<bean>`
-L'injection de dépendance se fait alors automatiquement sans avoir besoin de les spécifier explicitement
+On peut indiquer dans la déclaration d'un bean que l'on souhaite injecter ses dépendances par leur nom ou par leur type.
+
+On utilise pour ceci l'attribut `autowire` dans la balise `<bean>`.
+
+L'injection de dépendance se fait alors automatiquement sans avoir besoin de les spécifier explicitement.
 
 > **L'autowiring ne fonctionne qu'avec les setters et pas les constructeurs** : il faut donc un constructeur sans argument pour les beans considérés
 
@@ -210,13 +210,13 @@ L'injection de dépendance se fait alors automatiquement sans avoir besoin de le
 	<bean id="articleRepository" class="net.jmb.tuto.spring.repository.ArticleMemoryRepository"/>	
 	<bean id="catalogService" class="net.jmb.tuto.spring.service.CatalogBasicService" autowire="byName"/>
 	<bean id="devisService" class="net.jmb.tuto.spring.service.DevisSimpleService" autowire="byName"/>
-	
 ```
 
 ### 2. Au niveau global
 
- On peut indiquer pour tous les beans que l'on souhaite injecter leur dépendances par leur nom ou par leur type.
- On utilise pour ceci l'attribut `default-autowire="byName"` dans la balise `<beans>`
+On peut indiquer pour tous les beans que l'on souhaite injecter leur dépendances par leur nom ou par leur type.
+
+On utilise pour ceci l'attribut `default-autowire="byName"` dans la balise `<beans>`.
 
 **/src/main/resources/applicationContext-2.xml**
 
@@ -238,12 +238,15 @@ L'injection de dépendance se fait alors automatiquement sans avoir besoin de le
 - Beaucoup moins de xml à écrire et à lire : moins contraignant
 - Mais l'application est moins compréhensible puisque les dépendances ne sont pas décrites : plus difficile à maintenir
 
-## Commit : 06_Optimer la configuration xml
+## Branche 06_optimer_la_configuration_xml
 
 ### 1. Factoriser la config commune
 
-La configuration commune est déplacée dans un fichier séparé.
-Elle peut ensuite être importée via la balise `<import resource="xxx"/>`
+La configuration commune est déplacée dans un fichier séparé **applicationContext.xml**.
+
+Ce fichier est le point d'entrée de la config Spring pour toute notre application.
+
+Les configs spécifiques à chaque contexte peuvent y être importées via la balise `<import resource="xxx"/>`.
 
 Nouveau fichier **src/main/resources/applicationContext.xml**
 
@@ -259,14 +262,18 @@ Nouveau fichier **src/main/resources/applicationContext.xml**
 ### 2. Injecter des variables d'environnement
 
 On peut valoriser des variables d'environnement dans la commande d'exécution du programme.
-Ces variables sont définies sous la forme **-D**xxx=yyy.
 
-Avec: 
+Ces variables sont définies sous la forme **-D**xxx=yyy, avec: 
 - xxx = nom de la variable
 - yyy = valeur de la variable  
 
+<<<<<<< HEAD
 Ces variables peuvent être ensuite utilisées dans la config Spring :
 - la valeur de la variable à utilisée est déclarée sous la forme ${xxx}
+=======
+Les variables d'environnement peuvent être utilisées dans la config Spring :
+- la valeur de la variable à utiliser est déclarée sous la forme ${xxx}
+>>>>>>> refs/heads/06_optimer_la_configuration_xml
 
 **Exemple**
 
@@ -274,6 +281,7 @@ Pour définir la valeur du contexte égale à 2
 - Commande `java -Dcontexte=2 -classpath "..." net.jmb.tuto.spring.Application`
 
 Ce contexte est utilisable dans le fichier de config `applicationContext.xml`.
+
 Il permet l'import de la config spécifique au contexte
 
 **src/main/resources/applicationContext.xml**
@@ -291,9 +299,8 @@ Il permet l'import de la config spécifique au contexte
 On peut stocker des données de configuration dans des fichiers properties (typiquement `application.properties`).
 
 Ces données sont accessibles dans la config Spring :
-- la balise `<context:property-placeholder location="????"/>` indique qu'on souhaite utiliser des propriétés de configuration
-- la valeur de la propriété est ensuite accessible sous la forme ${xxx}
-
+- la balise `<context:property-placeholder location="???"/>` indique qu'on souhaite utiliser des propriétés de configuration.
+- la valeur de la propriété est ensuite accessible sous la forme ${xxx}.
 
 **Exemple**
 
@@ -334,11 +341,11 @@ Fichier **src/main/resources/applicationContext-2.xml**
 - Les valeurs ne sont plus définies en dur dans les programmes mais injectées à partir de fichiers de propriétés
 
 
-## Commit : 07_Injection par annotation @Autowired
+## Branche 07_injection_par_annotation
 
 ### 1. Balise <context:annotation-config/>  dans applicationContext.xml  
 
-Cette balise permet l'injection par annotation dans les classes dépendantes.
+Cette balise permet l'injection de dépendances par annotation dans les classes dépendantes.
 
 ```xml
    <!-- on a supprimé l'attribut default-autowire="byName" de la balise beans -->
@@ -360,7 +367,7 @@ Elle indique au conteneur Spring d'injecter le bean ayant le même type que la p
 
 > Ou bien sinon il faut injecter les dépendances dans la config xml
 
-Si on se réfère au diagramme de classes (commit 03), ces classes sont :
+Si on se réfère au diagramme de classes (Branche 03_création_des_contrôleurs), ces classes sont :
 - `ArticleController`
 - `CatalogAbstractService`
 - `DevisController`
@@ -375,3 +382,16 @@ public class DevisController {
 	@Autowired
 	DevisServiceInterface devisService;
 ```
+
+### 3. Conclusion
+
+Résultat :
+- l'injection de dépendance est à nouveau documentée contrairement à l'autowiring xml
+- elle est déclarée dans le code
+	- avantage : lisible immédiatement lorsqu'on travaille sur les composants
+	- inconvénient : crée une dépendance forte sur le framework Spring 
+	
+Pour pallier l'inconvénient de la dépendance forte sur le framework Spring, il est possible d'utiliser l'annotation JEE standard `@Resource`.
+
+Cette annotation outre le fait d'être un standard JEE présente aussi l'avantage de pouvoir désigner par son nom le bean qu'on souhaite injecter.
+ 
