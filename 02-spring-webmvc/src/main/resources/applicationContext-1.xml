@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<!-- 
+	 	Configuration des classes d'implémentation relatives au contexte 1 (beans pour Spring)
+	 	- Peu importe l'ordre dans lequel sont déclarés les beans, Spring en fait son affaire
+	 	- Il faut renseigner le nom qualifié de la classe 
+		- Chaque bean instancié dans le conteneur a un identifiant qui doit être unique 
+		  (il est déduit du nom de la classe s'il n'est pas explicitement renseigné) 
+		- Chaque bean peut ainsi être injecté dans les beans dépendants 
+	 -->
+	 
+	<bean id="articleRepository" class="net.jmb.tuto.spring.repository.ArticleMemoryRepository"/>
+	<bean id="catalogService" class="net.jmb.tuto.spring.service.CatalogBasicService" autowire="byName"/>
+	<bean id="devisService" class="net.jmb.tuto.spring.service.DevisSimpleService" autowire="byName"/>
+	
+	<!-- 
+	 	La configuration des contrôleurs valables quel que soit le contexte est 
+	 	faite dans le fichier commun applicationContext.xml
+	 -->	 
+
+
+</beans>

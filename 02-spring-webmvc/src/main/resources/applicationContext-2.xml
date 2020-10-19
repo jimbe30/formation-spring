@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<!-- 
+	 	Configuration des classes d'implémentation relatives au contexte 2
+	 -->	 
+	<bean id="articleRepository" class="net.jmb.tuto.spring.repository.ArticleDatabaseRepository"/>	
+	<bean id="catalogService" class="net.jmb.tuto.spring.service.CatalogDetailService"/>
+	<bean id="clientService" class="net.jmb.tuto.spring.service.ClientSimpleService" />	
+	
+	<!-- 
+	 	Le taux de remise défini dans application.properties est accédé avec sa clé ${app.contexte2.remise}
+	 	et injecté dans la propriété 'remise' de la classe DevisRemiseService
+	 -->	
+	<bean id="devisService" class="net.jmb.tuto.spring.service.DevisRemiseService">
+		<property name="remise" value="${app.contexte2.remise}"/>
+	</bean>
+	
+	<!-- 
+	 	La configuration des contrôleurs valables quel que soit le contexte n' plus ici 
+	 	car elle est faite dans le fichier commun applicationContext.xml
+	 -->	
+
+</beans>
