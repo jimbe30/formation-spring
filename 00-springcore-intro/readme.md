@@ -14,6 +14,7 @@
 | service     | traitement de la logique métier |
 
 **Arborescence**
+
 ```j
 net.jmb.tuto.spring    // racine
  |__ Application.java  // point d'entrée de l'application
