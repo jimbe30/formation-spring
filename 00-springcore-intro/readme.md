@@ -14,6 +14,7 @@
 | service     | traitement de la logique métier |
 
 **Arborescence**
+
 ```j
 net.jmb.tuto.spring    // racine
  |__ Application.java  // point d'entrée de l'application
@@ -39,6 +40,7 @@ L'application a pour fonction d'établir un devis à un client en fonction d'art
 ### 2. Réalisation
 
 Séquence de dépendances
+
 ```java
 Application.main()
 ^ CatalogService.afficherListeArticles()
