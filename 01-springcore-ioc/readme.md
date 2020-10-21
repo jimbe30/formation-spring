@@ -69,11 +69,11 @@ Au final, les diagrammes ci-dessous font apparaître les dépendances entre comp
 
 - **Diagramme de classes sur la fonctionnalité 'catalogue'**
 
-![](diagram/CatalogModel.jpg)
+![CatalogModel](diagram/CatalogModel.jpg)
 
 - **Diagramme de classes sur la fonctionnalité 'devis'**
 
-![](diagram/DevisModel.jpg)
+![DevisModel](diagram/DevisModel.jpg)
 
 
 ## Branche 04_spring_configuration_full_xml
