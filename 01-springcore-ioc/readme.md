@@ -386,9 +386,9 @@ Résultat :
 	- Avantage : lisible immédiatement lorsqu'on travaille sur les composants
 	- Inconvénient : crée une dépendance forte sur le framework Spring 
 	
-Pour pallier l'inconvénient de la dépendance forte sur le framework Spring, il est possible d'utiliser l'annotation JEE standard `@Resource`.
+Pour pallier l'inconvénient de la dépendance forte sur le framework Spring, il est possible d'utiliser à la place les annotations JEE standard `@Resource` ou `@Inject`.
 
-Cette annotation outre le fait d'être un standard JEE présente aussi l'avantage de pouvoir désigner par son nom le bean qu'on souhaite injecter.
+L'annotation `@Resource` outre le fait d'être un standard JEE présente aussi l'avantage de pouvoir désigner par son nom le bean qu'on souhaite injecter.
 
 Exemple sur la classe **net.jmb.tuto.spring.controller.ArticleController**
 
@@ -400,6 +400,4 @@ public class ArticleController {
 	...
 }
 ```
-
-
  
