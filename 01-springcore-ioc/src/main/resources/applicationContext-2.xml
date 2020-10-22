@@ -7,12 +7,9 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd">
 	
-	<!-- 
-	 	Configuration des classes d'implémentation relatives au contexte 2
-	 -->	 
-	<bean id="articleRepository" class="net.jmb.tuto.spring.repository.ArticleDatabaseRepository"/>	
-	<bean id="catalogService" class="net.jmb.tuto.spring.service.CatalogDetailService"/>
-	<bean id="clientService" class="net.jmb.tuto.spring.service.ClientSimpleService" />	
+	<context:component-scan 
+		base-package="net.jmb.tuto.spring.config.contexte2"
+	/> 
 	
 	<!-- 
 	 	Le taux de remise défini dans application.properties est accédé avec sa clé ${app.contexte2.remise}
@@ -21,10 +18,5 @@
 	<bean id="devisService" class="net.jmb.tuto.spring.service.DevisRemiseService">
 		<property name="remise" value="${app.contexte2.remise}"/>
 	</bean>
-	
-	<!-- 
-	 	La configuration des contrôleurs valables quel que soit le contexte n' plus ici 
-	 	car elle est faite dans le fichier commun applicationContext.xml
-	 -->	
 
 </beans>

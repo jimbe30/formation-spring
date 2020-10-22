@@ -7,13 +7,16 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd">
     
-    <!-- on a supprimé l'attribut default-autowire="byName" de la balise beans -->
     
     <!--
-    	Permet l'injection par annotation @Autowired dans les classes ayant des dépendances sur les beans définis ici
-    	Les getters et setters des classes dépendantes sont facultatifs
+    	Permet la détection et l'instanciation des beans dans les packages considérés.
+		Ces beans doivent être annotés pour être détectés
      -->
-    <context:annotation-config/>
+    <context:component-scan base-package="net.jmb.tuto.spring.controller" />
+    
+    <!-- 
+	 	Plus besoin de déclarer dans la config xml les contrôleurs à instancier
+	 -->
 
     <!-- 
 	 	On déclare accéder aux valeurs du fichier de propriétés
@@ -26,11 +29,4 @@
 	 -->
 	<import resource="classpath:/applicationContext-${contexte}.xml"/>
 	
-	<!-- 
-	 	Configuration commune des contrôleurs valables quel que soit le contexte
-	 -->
-	<bean class="net.jmb.tuto.spring.controller.ClientController"/>
-	<bean class="net.jmb.tuto.spring.controller.ArticleController"/>
-	<bean class="net.jmb.tuto.spring.controller.DevisController"/>
-
 </beans>

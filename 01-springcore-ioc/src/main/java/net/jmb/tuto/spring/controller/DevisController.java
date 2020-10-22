@@ -3,11 +3,13 @@ package net.jmb.tuto.spring.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import net.jmb.tuto.spring.entity.Client;
 import net.jmb.tuto.spring.entity.Devis;
 import net.jmb.tuto.spring.service.DevisServiceInterface;
 
+@Controller
 public class DevisController {
 	
 	@Autowired

@@ -2,8 +2,11 @@ package net.jmb.tuto.spring.controller;
 
 import java.util.Scanner;
 
+import org.springframework.stereotype.Controller;
+
 import net.jmb.tuto.spring.entity.Client;
 
+@Controller
 public class ClientController {
 
 	

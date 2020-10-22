@@ -400,4 +400,110 @@ public class ArticleController {
 	...
 }
 ```
- 
+
+## Branche 08_instanciation_par_annotation
+
+### 1. Balise `<context:component-scan base-package="..."/>` dans applicationContext.xml  
+
+Cette balise indique les packages qui doivent être scannés pour détecter et instancier les beans gérés par le conteneur Spring.
+
+Elle rend inutile l'annotation `<context:annotation-config/>`
+
+**applicationContext.xml**
+
+```xml
+   <!--
+    	Permet la détection et l'instanciation des beans dans les packages considérés.
+		Ces beans doivent être annotés pour être détectés
+     -->
+    <context:component-scan base-package="net.jmb.tuto.spring.controller" />
+    
+    <!-- 
+	 	Plus besoin de déclarer dans la config xml les contrôleurs à instancier
+	 -->
+```
+
+### 2. Annotation `@Component` et ses stéréotypes dans les classes à instancier
+
+`@Component` est l'annotation générique qui permet aux classes annotées d'être auto détectées et instanciées si elles sont dans un package scanné
+
+Cette annotation est dérivée en plusieurs stéréotypes qui représentent une spécialisation :
+- `@Controller` pour les classes contrôleurs
+- `@Service` pour les classes de services
+- `@Repository` pour les classes d'accès aux données
+
+Exemple : classe **ArticleController**
+
+```java
+@Controller
+public class ArticleController {
+	...
+}
+```
+
+### 3. Organisation des classes à gérer dans le conteneur Spring
+
+Dans les fichier `applicationContext-1.xml` et `applicationContext-2.xml`, on indique de scanner les packages contenant les services et les repositories
+
+```xml
+	<context:component-scan 
+		base-package="
+			net.jmb.tuto.spring.service, 
+			net.jmb.tuto.spring.repository"
+	/> 
+```
+
+Ensuite si toutes les classes relatives aux différents contextes sont annotées, on est confronté à un problème de doublon
+
+Exemple : pour l'interface `DevisServiceInterface`, on a 2 classes qui ne peuvent pas être annotées en même temps :
+- `DevisSimpleService`
+- `DevisRemiseService`
+
+La preuve en essayant.
+
+------
+
+> **Solution proposée** : 
+> - Créer un package distinct pour chaque contexte spécifique
+> - Regrouper dans ces packages distincts les classes annotées
+> - Scanner uniquement le package correspondant au contexte voulu
+
+
+**Arborescence des packages de configuration**
+
+![ConfigTree](diagram/ConfigTree.png)
+
+> Chaque classe annotée dans ces packages ne fait qu'étendre la classe spécifique à instancier
+
+**Exemple : classe `ArticleRepository` pour le contexte 2** 
+
+```java
+@Repository
+public class ArticleRepository extends ArticleDatabaseRepository implements ArticleRepositoryInterface {
+}
+```
+
+**Configuration applicationContext-2.xml du contexte 2**
+
+```xml
+<context:component-scan 
+		base-package="net.jmb.tuto.spring.config.contexte2"
+	/> 
+```
+
+### 4. Conclusion
+
+La configuration s'effectue presque intégralement en java : plus de verbiage xml.
+
+Avec l'organisation en packages des beans annotés :
+- Le couplage avec le framework se réduit uniquement à ces packages
+- La structure de la config reste centralisée, lisible et maintenable
+
+
+
+
+
+
+
+
+  
