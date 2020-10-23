@@ -695,9 +695,9 @@ Exemple :
 public class ContexteDefautConfig { ... }
 ```
 
-### 7. quelquues autres annotations de configuration utiles
+### 7. quelques autres annotations de configuration utiles
 
-- `@Import` : permet l'import d'autres classes de configuration
-- `@ImportResource` : importe de fichiers de configuration XML
+- `@Import` : importe d'autres classes de configuration
+- `@ImportResource` : importe des fichiers de configuration XML
 - `@Profile` : conditionne le chargement de la config à la valeur du profil (propriété `spring.profiles.active` de l'environnement Spring)
 
