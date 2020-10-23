@@ -502,7 +502,7 @@ Avec l'organisation en packages des beans annotés :
 
 ## Branche 09_spring_configuration_full_java
 
-### 1. Annotation `@configuration`
+### 1. Déclarer les classes de configuration -> annotation `@Configuration`
 
 Cette annotation placée sur une classe indique qu'il s'agit d'une classe de configuration Spring.
 
@@ -611,3 +611,78 @@ public class Contexte2Config {
 	}
 }
 ```
+
+### 2. Sélectionner les packages à scanner (auto détection des beans) -> annotation `@ComponentScan`
+
+Cette annotation se place sur une classe de configuration et spécifie les packages à scanner.
+Si rien n'est fourni en paramètre, le package en cours et ses sous-packages sont scanné.
+
+C'est le cas dans l'exemple ci-dessous :
+
+```java
+@Configuration
+@ComponentScan
+public class ApplicationConfig 
+```
+
+### 3. Instancier un objet géré dans le conteneur -> annotation `@Bean`
+
+Cette annotation se place sur une méthode qui retourne un objet :
+- L'objet en retour est placé dans le conteneur Spring et candidat pour l'injection en @Autowired
+- Si la méthode a des paramètres, ils sont injectés automatiquement si leur type est une classe gérée par Spring.
+
+Exemple :
+
+```java
+@Bean
+public ArticleController articleController(CatalogServiceInterface catalogService) { ... }
+```
+
+### 4. Accéder à des variables et propriétés -> annotations `@PropertySource` et `@Value`
+
+Les propriétés sont cherchées dans l'environnement Spring (interface `Environment`).
+Cet environnement est alimenté au chargement du contexte Spring avec :
+- les fichiers properties, 
+- les variables d'environnement (JVM ou système),
+- les ressources JNDI,
+- les paramètres du ServletContext pour les webapp
+
+Fonctionnement dans le cas d'un fichier de propriétés :
+- **@PropertySource** se place sur une classe de config et spécifie le chemin vers le fichier de propriété 
+- **@Value("${xxx}")** se place sur une variable (attribut ou paramètre) et lui affecte la valeur de la propriété
+	- On passe en paramètre de cette annotation la chaîne "${xxx}" 
+	- Avec xxx qui représente le nom de la propriété à lire 
+
+Exemple :
+
+```java
+@Configuration
+@PropertySource(value = "classpath:/application.properties")
+public class Contexte2Config {	
+	@Value("${app.contexte2.remise}")
+	int remise = 10;	// 10 est la valeur par défaut 
+```
+
+### 5. Charger la config sous certaines conditions -> Annotation `@ConditionalOnProperty`
+
+Cette annotation se place sur une classe de config ou une méthode.
+Et selon où elle se situe :
+- Elle ne charge la config que si la condition est respectée
+- Elle n'exécute la méthode que si la condition est respectée
+
+Comme ci-dessus la propriété est récupérée dans l'environnement Spring.
+
+Exemple :
+
+```java
+@Configuration
+@ConditionalOnProperty(value = "contexte", matchIfMissing = true, havingValue = "1")
+public class ContexteDefautConfig { ... }
+```
+
+### 6. quelquues autres annotations de configuration utiles
+
+- `@Import` : permet l'import d'autres classes de configuration
+- `@ImportResource` : importe de fichiers de configuration XML
+- `@Profile` : conditionne le chargement de la config à la valeur du profil (propriété `spring.profiles.active` de l'environnement Spring)
+

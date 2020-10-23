@@ -3,6 +3,7 @@ package net.jmb.tuto.spring.config.contexteDefaut;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 import net.jmb.tuto.spring.repository.ArticleMemoryRepository;
 import net.jmb.tuto.spring.repository.ArticleRepositoryInterface;
@@ -14,6 +15,8 @@ import net.jmb.tuto.spring.service.DevisSimpleService;
 @Configuration
 @ConditionalOnProperty(value = "contexte", matchIfMissing = true, havingValue = "1")
 public class ContexteDefautConfig {
+	
+	Environment env;
 	
 	@Bean
 	public CatalogServiceInterface catalogService(ArticleRepositoryInterface articleRepository) {
