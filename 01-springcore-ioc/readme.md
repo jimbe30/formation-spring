@@ -500,10 +500,114 @@ Avec l'organisation en packages des beans annotés :
 - La structure de la config reste centralisée, lisible et maintenable
 
 
+## Branche 09_spring_configuration_full_java
 
+### 1. Annotation `@configuration`
 
+Cette annotation placée sur une classe indique qu'il s'agit d'une classe de configuration Spring.
 
+Les classes de configuration ont la même vocation que les fichiers de config xml et peuvent les remplacer ou coexister.
+- Intanciation des classes concrètes
+- Injection des dépendances
+- Import de configuration externe Java ou XML
+- Scan de packages pour auto détection des beans
+- Accès aux variables d'environnement, 
+- Accès aux fichiers properties,
+- etc...
 
+**Arborescence des packages de configuration**
 
+![JavaConfigTree](diagram/JavaConfigTree.png)
 
-  
+**net.jmb.tuto.spring.config.ApplicationConfig**
+> Le point d'entrée de la configuration pour toute l'application
+
+```java
+@Configuration
+@ComponentScan
+public class ApplicationConfig {
+	
+	@Bean
+	public ClientController clientController() {
+		ClientController clientController = new ClientController();
+		return clientController;
+	}
+	@Bean
+	public ArticleController articleController(CatalogServiceInterface catalogService) {
+		ArticleController articleController = new ArticleController();
+		articleController.setCatalogService(catalogService);
+		return articleController;
+	}
+	@Bean
+	public DevisController devisController(DevisServiceInterface devisService) {
+		DevisController devisController = new DevisController();
+		devisController.setDevisService(devisService);
+		return devisController;
+	}
+}
+```
+
+**net.jmb.tuto.spring.config.contexteDefaut.ContexteDefautConfig**
+> Configuration par défaut (valable aussi pour le contexte 1)
+
+```java
+@Configuration
+@ConditionalOnProperty(value = "contexte", matchIfMissing = true, havingValue = "1")
+public class ContexteDefautConfig {
+	
+	@Bean
+	public CatalogServiceInterface catalogService(ArticleRepositoryInterface articleRepository) {
+		CatalogBasicService catalogBasicService = new CatalogBasicService();
+		catalogBasicService.setArticleRepository(articleRepository);
+		return catalogBasicService;
+	}
+	@Bean
+	public ArticleRepositoryInterface articleRepository() {
+		return new ArticleMemoryRepository();
+	}	
+	@Bean
+	public DevisServiceInterface devisService(CatalogServiceInterface catalogService) {
+		DevisSimpleService devisSimpleService = new DevisSimpleService();
+		devisSimpleService.setCatalogService(catalogService);
+		return devisSimpleService;
+	}
+}
+```
+
+**net.jmb.tuto.spring.config.contexte2.Contexte2Config**
+> Configuration valable uniquement pour le contexte 2
+
+```java
+@Configuration
+@ConditionalOnProperty(name = "contexte", havingValue = "2")
+@PropertySource(value = "classpath:/application.properties")
+public class Contexte2Config {
+	
+	@Value("${app.contexte2.remise}")
+	int remise = 10;
+	
+	@Bean
+	public CatalogServiceInterface catalogService(ArticleRepositoryInterface articleRepository) {
+		CatalogDetailService catalogDetailService = new CatalogDetailService();
+		catalogDetailService.setArticleRepository(articleRepository);
+		return catalogDetailService;
+	}
+	@Bean
+	public ArticleRepositoryInterface articleRepository() {
+		return new ArticleDatabaseRepository();
+	}	
+	@Bean
+	public DevisServiceInterface devisService(CatalogServiceInterface catalogService, ClientServiceInterface clientService) {
+		DevisRemiseService devisRemiseService = new DevisRemiseService();
+		devisRemiseService.setCatalogService(catalogService);
+		devisRemiseService.setClientService(clientService);
+		devisRemiseService.setRemise(remise);
+		return devisRemiseService;
+	}	
+	@Bean
+	public ClientServiceInterface clientService() {
+		ClientSimpleService clientSimpleService = new ClientSimpleService();
+		return clientSimpleService;
+	}
+}
+```

@@ -1,12 +1,9 @@
 package net.jmb.tuto.spring.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import net.jmb.tuto.spring.repository.ArticleRepositoryInterface;
 
 public abstract class CatalogAbstractService implements CatalogServiceInterface {
 
-	@Autowired
 	ArticleRepositoryInterface articleRepository;
 	
 	public CatalogAbstractService() {

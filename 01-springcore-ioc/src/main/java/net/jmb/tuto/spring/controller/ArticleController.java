@@ -4,15 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-
 import net.jmb.tuto.spring.service.CatalogServiceInterface;
 
-@Controller
-public class ArticleController {
-	
-	@Autowired
+public class ArticleController {	
+
 	CatalogServiceInterface service;
 	
 	public List<Integer> choisirArticles() {
@@ -41,6 +36,14 @@ public class ArticleController {
 			return numArticles;
 		}
 		return null;
+	}
+	
+	public CatalogServiceInterface getCatalogService() {
+		return service;
+	}
+
+	public void setCatalogService(CatalogServiceInterface service) {
+		this.service = service;
 	}
 
 }

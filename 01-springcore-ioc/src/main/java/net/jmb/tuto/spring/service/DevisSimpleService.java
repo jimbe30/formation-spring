@@ -5,8 +5,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import net.jmb.tuto.spring.entity.Article;
 import net.jmb.tuto.spring.entity.Client;
 import net.jmb.tuto.spring.entity.DetailDevis;
@@ -16,7 +14,6 @@ public class DevisSimpleService implements DevisServiceInterface {
 
 	static final int DUREE_VALIDITE_DEVIS = 10;
 	
-	@Autowired
 	CatalogServiceInterface catalogService;
 	
 	public DevisSimpleService() {

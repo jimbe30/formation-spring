@@ -2,13 +2,10 @@ package net.jmb.tuto.spring.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import net.jmb.tuto.spring.entity.Devis;
 
 public class DevisRemiseService extends DevisSimpleService implements DevisServiceInterface {
 
-	@Autowired
 	ClientServiceInterface clientService;
 	int remise = 10; // en vrai ça devrait être paramétré quelque part
 	
