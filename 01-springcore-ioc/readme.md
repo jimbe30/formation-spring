@@ -483,7 +483,7 @@ public class ArticleRepository extends ArticleDatabaseRepository implements Arti
 }
 ```
 
-**Configuration applicationContext-2.xml du contexte 2**
+**Configuration applicationContext-2.xml associé au contexte 2**
 
 ```xml
 <context:component-scan 
