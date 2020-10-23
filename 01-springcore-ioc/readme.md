@@ -612,7 +612,22 @@ public class Contexte2Config {
 }
 ```
 
-### 2. Sélectionner les packages à scanner (auto détection des beans) -> annotation `@ComponentScan`
+### 2. Charger le contexte Spring -> classe `@AnnotationConfigApplicationContext`
+
+**net.jmb.tuto.spring.Application**
+
+```java
+public class Application {
+
+	public static void main(String[] args) {
+
+		// L'élement central de la config Spring est la classe ApplicationConfig
+		ApplicationContext applicationContext = new AnnotationConfigApplicationContext(ApplicationConfig.class);
+		...
+}
+```
+
+### 3. Sélectionner les packages à scanner (auto détection des beans) -> annotation `@ComponentScan`
 
 Cette annotation se place sur une classe de configuration et spécifie les packages à scanner.
 Si rien n'est fourni en paramètre, le package en cours et ses sous-packages sont scanné.
@@ -625,7 +640,7 @@ C'est le cas dans l'exemple ci-dessous :
 public class ApplicationConfig 
 ```
 
-### 3. Instancier un objet géré dans le conteneur -> annotation `@Bean`
+### 4. Instancier un objet géré dans le conteneur -> annotation `@Bean`
 
 Cette annotation se place sur une méthode qui retourne un objet :
 - L'objet en retour est placé dans le conteneur Spring et candidat pour l'injection en @Autowired
@@ -638,7 +653,7 @@ Exemple :
 public ArticleController articleController(CatalogServiceInterface catalogService) { ... }
 ```
 
-### 4. Accéder à des variables et propriétés -> annotations `@PropertySource` et `@Value`
+### 5. Accéder à des variables et propriétés -> annotations `@PropertySource` et `@Value`
 
 Les propriétés sont cherchées dans l'environnement Spring (interface `Environment`).
 Cet environnement est alimenté au chargement du contexte Spring avec :
@@ -663,7 +678,7 @@ public class Contexte2Config {
 	int remise = 10;	// 10 est la valeur par défaut 
 ```
 
-### 5. Charger la config sous certaines conditions -> Annotation `@ConditionalOnProperty`
+### 6. Charger la config sous certaines conditions -> Annotation `@ConditionalOnProperty`
 
 Cette annotation se place sur une classe de config ou une méthode.
 Et selon où elle se situe :
@@ -680,7 +695,7 @@ Exemple :
 public class ContexteDefautConfig { ... }
 ```
 
-### 6. quelquues autres annotations de configuration utiles
+### 7. quelquues autres annotations de configuration utiles
 
 - `@Import` : permet l'import d'autres classes de configuration
 - `@ImportResource` : importe de fichiers de configuration XML
