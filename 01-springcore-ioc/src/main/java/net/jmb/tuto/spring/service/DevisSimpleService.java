@@ -56,6 +56,7 @@ public class DevisSimpleService implements DevisServiceInterface {
 		
 		// Calcul détail devis par article
 		articlesEtQuantites.forEach((numArticle, quantite) -> {
+			System.err.println("DevisSimpleService.calculerDevis(): " + catalogService);
 			Article article = catalogService.chercherArticle(numArticle);
 			if (article != null) {
 				DetailDevis detailDevis = calculerDetail(article, quantite);

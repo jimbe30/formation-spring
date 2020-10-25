@@ -1,10 +1,13 @@
 package net.jmb.tuto.spring.config.contexte2;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 
 import net.jmb.tuto.spring.repository.ArticleDatabaseRepository;
 import net.jmb.tuto.spring.repository.ArticleRepositoryInterface;
@@ -24,6 +27,10 @@ public class Contexte2Config {
 	int remise = 10;
 	
 	@Bean
+	@Scope(
+		scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE
+		, proxyMode = ScopedProxyMode.INTERFACES
+	)
 	public CatalogServiceInterface catalogService(ArticleRepositoryInterface articleRepository) {
 		CatalogDetailService catalogDetailService = new CatalogDetailService();
 		catalogDetailService.setArticleRepository(articleRepository);

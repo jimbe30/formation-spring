@@ -695,9 +695,125 @@ Exemple :
 public class ContexteDefautConfig { ... }
 ```
 
-### 7. quelques autres annotations de configuration utiles
+### 7. Quelques autres annotations de configuration utiles
 
 - `@Import` : importe d'autres classes de configuration
 - `@ImportResource` : importe des fichiers de configuration XML
 - `@Profile` : conditionne le chargement de la config à la valeur du profil (propriété `spring.profiles.active` de l'environnement Spring)
 
+
+## Branche 10_scopes
+
+### 1. Considérations sur la portée (scope) des beans Spring
+
+Par défaut, la portée des beans gérés par Spring est singleton.
+C'est-à-dire que pour chaque classe, Spring  n'utilise qu'une seule instance d'objet dans toute l'application.
+
+Cette portée est généralement adaptée car le conteneur Spring gère des classes de traitement.
+- Les classes de traitement ne portent généralement pas d'attributs métiers mais uniquement des méthodes (ou des attributs de config qui ne varient plus une fois initialisés).
+- Il n'y a donc aucun besoin d'avoir plusieurs instances de ces classes. Les instances multiples n'ont de sens que pour distinguer des états d'objets en fonction de leurs attributs.
+
+> Cependant, il est parfois nécessaire de stocker des **données variables dans les objets gérés par Spring**.
+> Dans ce cas, il faut impérativement modifier la portée : L'objet ne peut plus être de type singleton car l'affectation de valeurs à ses attributs peut provoquer des interférences.
+
+
+### 2. Scope Singleton (par défaut)
+
+Exemple de config sur l'interface `CatalogServiceInterface`
+
+** ContexteDefautConfig **
+
+```java
+...
+public class ContexteDefautConfig {
+	
+	@Bean
+	@Scope(scopeName = ConfigurableBeanFactory.SCOPE_SINGLETON) // ou aucun scope : c'est pareil
+	public CatalogServiceInterface catalogService(ArticleRepositoryInterface articleRepository) {
+		CatalogBasicService catalogBasicService = new CatalogBasicService();
+		catalogBasicService.setArticleRepository(articleRepository);
+		return catalogBasicService;
+	}
+```
+
+On rajoute un `sysout` dans les méthodes qui utilisent cette interface
+
+** ArticleController.choisirArticles() **
+
+```java
+...
+	public List<Integer> choisirArticles() {
+
+		if (service != null) {			
+			System.err.println("ArticleController.choisirArticles(): " + service); 
+			...
+```
+
+** DevisSimpleService.calculerDevis() **
+
+```java
+	public Devis calculerDevis(String nomClient, List<Integer> numArticles) {
+		...		
+		// Calcul détail devis par article
+		articlesEtQuantites.forEach((numArticle, quantite) -> {
+			System.err.println("DevisSimpleService.calculerDevis(): " + catalogService);
+			Article article = catalogService.chercherArticle(numArticle);
+			...
+```
+
+A l'exécution, on constate que la référence de l'objet de type `CatalogServiceInterface` est toujours la même
+
+
+### 3. Scope Prototype
+
+Avec ce scope, un nouvel objet est instancié et retourné par Spring à chaque injection ou à chaque appel au conteneur
+
+Exemple de config sur l'interface `CatalogServiceInterface`
+
+** ContexteDefautConfig **
+
+```java
+public class ContexteDefautConfig {
+	
+	@Bean
+	@Scope(
+		scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE 
+	)
+	public CatalogServiceInterface catalogService(ArticleRepositoryInterface articleRepository) {
+		CatalogBasicService catalogBasicService = new CatalogBasicService();
+		catalogBasicService.setArticleRepository(articleRepository);
+		return catalogBasicService;
+	}
+```
+
+A l'exécution, on constate que la référence de l'objet de type `CatalogServiceInterface` :
+- Est différente entre `ArticleController` et `DevisSimpleService`.
+- Mais est identique à chaque utilisation à l'intérieur de `DevisSimpleService`.
+
+> Problème : prototype injecté dans un singleton.
+
+`DevisSimpleService` est un singleton et l'injection de `CatalogServiceInterface` n'est faire qu'une seule fois à sa création.
+Chaque appel de cette interface à l'intérieur du singleton fera toujours référence à la même instance, ce qu'on ne souhaite pas.
+
+### 4. Scope Prototype + proxyMode
+
+Pour résoudre le problème du prototype à l'intérieur du singleton et obtenir une instance différente de `CatalogServiceInterface` à chaque appel, Spring propose l'option `proxyMode`
+
+** ContexteDefautConfig **
+
+```java
+public class ContexteDefautConfig {
+	
+	@Bean
+	@Scope(
+		scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE 
+		, proxyMode = ScopedProxyMode.INTERFACES
+	)
+	public CatalogServiceInterface catalogService(ArticleRepositoryInterface articleRepository) {
+		CatalogBasicService catalogBasicService = new CatalogBasicService();
+		catalogBasicService.setArticleRepository(articleRepository);
+		return catalogBasicService;
+	}
+```
+
+A l'exécution, on constate que la référence de l'objet de type `CatalogServiceInterface` est différente à chaque utilisation.

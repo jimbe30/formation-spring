@@ -14,6 +14,8 @@ public class ArticleController {
 
 		if (service != null) {
 			
+			System.err.println("ArticleController.choisirArticles(): " + service);
+			
 			List<Integer> numArticles = new ArrayList<Integer>();
 			
 			// On propose un choix dans la liste des articles disponibles
