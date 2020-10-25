@@ -4,18 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.annotation.Resource;
-
 import net.jmb.tuto.spring.service.CatalogServiceInterface;
 
-public class ArticleController {
-	
-	@Resource(name = "catalogService")
+public class ArticleController {	
+
 	CatalogServiceInterface service;
 	
 	public List<Integer> choisirArticles() {
 
 		if (service != null) {
+			
+			System.err.println("ArticleController.choisirArticles(): " + service);
 			
 			List<Integer> numArticles = new ArrayList<Integer>();
 			
@@ -39,6 +38,14 @@ public class ArticleController {
 			return numArticles;
 		}
 		return null;
+	}
+	
+	public CatalogServiceInterface getCatalogService() {
+		return service;
+	}
+
+	public void setCatalogService(CatalogServiceInterface service) {
+		this.service = service;
 	}
 
 }

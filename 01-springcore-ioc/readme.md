@@ -386,9 +386,9 @@ Résultat :
 	- Avantage : lisible immédiatement lorsqu'on travaille sur les composants
 	- Inconvénient : crée une dépendance forte sur le framework Spring 
 	
-Pour pallier l'inconvénient de la dépendance forte sur le framework Spring, il est possible d'utiliser l'annotation JEE standard `@Resource`.
+Pour pallier l'inconvénient de la dépendance forte sur le framework Spring, il est possible d'utiliser à la place les annotations JEE standard `@Resource` ou `@Inject`.
 
-Cette annotation outre le fait d'être un standard JEE présente aussi l'avantage de pouvoir désigner par son nom le bean qu'on souhaite injecter.
+L'annotation `@Resource` outre le fait d'être un standard JEE présente aussi l'avantage de pouvoir désigner par son nom le bean qu'on souhaite injecter.
 
 Exemple sur la classe **net.jmb.tuto.spring.controller.ArticleController**
 
@@ -401,5 +401,419 @@ public class ArticleController {
 }
 ```
 
+## Branche 08_instanciation_par_annotation
 
- 
+### 1. Balise `<context:component-scan base-package="..."/>` dans applicationContext.xml  
+
+Cette balise indique les packages qui doivent être scannés pour détecter et instancier les beans gérés par le conteneur Spring.
+
+Elle rend inutile l'annotation `<context:annotation-config/>`
+
+**applicationContext.xml**
+
+```xml
+   <!--
+    	Permet la détection et l'instanciation des beans dans les packages considérés.
+		Ces beans doivent être annotés pour être détectés
+     -->
+    <context:component-scan base-package="net.jmb.tuto.spring.controller" />
+    
+    <!-- 
+	 	Plus besoin de déclarer dans la config xml les contrôleurs à instancier
+	 -->
+```
+
+### 2. Annotation `@Component` et ses stéréotypes dans les classes à instancier
+
+`@Component` est l'annotation générique qui permet aux classes annotées d'être auto détectées et instanciées si elles sont dans un package scanné
+
+Cette annotation est dérivée en plusieurs stéréotypes qui représentent une spécialisation :
+- `@Controller` pour les classes contrôleurs
+- `@Service` pour les classes de services
+- `@Repository` pour les classes d'accès aux données
+
+Exemple : classe **ArticleController**
+
+```java
+@Controller
+public class ArticleController {
+	...
+}
+```
+
+### 3. Organisation des classes à gérer dans le conteneur Spring
+
+Dans les fichier `applicationContext-1.xml` et `applicationContext-2.xml`, on indique de scanner les packages contenant les services et les repositories
+
+```xml
+	<context:component-scan 
+		base-package="
+			net.jmb.tuto.spring.service, 
+			net.jmb.tuto.spring.repository"
+	/> 
+```
+
+Ensuite si toutes les classes relatives aux différents contextes sont annotées, on est confronté à un problème de doublon
+
+Exemple : pour l'interface `DevisServiceInterface`, on a 2 classes qui ne peuvent pas être annotées en même temps :
+- `DevisSimpleService`
+- `DevisRemiseService`
+
+La preuve en essayant.
+
+------
+
+> **Solution proposée** : 
+> - Créer un package distinct pour chaque contexte spécifique
+> - Regrouper dans ces packages distincts les classes annotées
+> - Scanner uniquement le package correspondant au contexte voulu
+
+
+**Arborescence des packages de configuration**
+
+![ConfigTree](diagram/ConfigTree.png)
+
+> Chaque classe annotée dans ces packages ne fait qu'étendre la classe spécifique à instancier
+
+**Exemple : classe `ArticleRepository` pour le contexte 2** 
+
+```java
+@Repository
+public class ArticleRepository extends ArticleDatabaseRepository implements ArticleRepositoryInterface {
+}
+```
+
+**Configuration applicationContext-2.xml associé au contexte 2**
+
+```xml
+<context:component-scan 
+		base-package="net.jmb.tuto.spring.config.contexte2"
+	/> 
+```
+
+### 4. Conclusion
+
+La configuration s'effectue presque intégralement en java : plus de verbiage xml.
+
+Avec l'organisation en packages des beans annotés :
+- Le couplage avec le framework se réduit uniquement à ces packages
+- La structure de la config reste centralisée, lisible et maintenable
+
+
+## Branche 09_spring_configuration_full_java
+
+### 1. Déclarer les classes de configuration -> annotation `@Configuration`
+
+Cette annotation placée sur une classe indique qu'il s'agit d'une classe de configuration Spring.
+
+Les classes de configuration ont la même vocation que les fichiers de config xml et peuvent les remplacer ou coexister.
+- Intanciation des classes concrètes
+- Injection des dépendances
+- Import de configuration externe Java ou XML
+- Scan de packages pour auto détection des beans
+- Accès aux variables d'environnement, 
+- Accès aux fichiers properties,
+- etc...
+
+**Arborescence des packages de configuration**
+
+![JavaConfigTree](diagram/JavaConfigTree.png)
+
+**net.jmb.tuto.spring.config.ApplicationConfig**
+> Le point d'entrée de la configuration pour toute l'application
+
+```java
+@Configuration
+@ComponentScan
+public class ApplicationConfig {
+	
+	@Bean
+	public ClientController clientController() {
+		ClientController clientController = new ClientController();
+		return clientController;
+	}
+	@Bean
+	public ArticleController articleController(CatalogServiceInterface catalogService) {
+		ArticleController articleController = new ArticleController();
+		articleController.setCatalogService(catalogService);
+		return articleController;
+	}
+	@Bean
+	public DevisController devisController(DevisServiceInterface devisService) {
+		DevisController devisController = new DevisController();
+		devisController.setDevisService(devisService);
+		return devisController;
+	}
+}
+```
+
+**net.jmb.tuto.spring.config.contexteDefaut.ContexteDefautConfig**
+> Configuration par défaut (valable aussi pour le contexte 1)
+
+```java
+@Configuration
+@ConditionalOnProperty(value = "contexte", matchIfMissing = true, havingValue = "1")
+public class ContexteDefautConfig {
+	
+	@Bean
+	public CatalogServiceInterface catalogService(ArticleRepositoryInterface articleRepository) {
+		CatalogBasicService catalogBasicService = new CatalogBasicService();
+		catalogBasicService.setArticleRepository(articleRepository);
+		return catalogBasicService;
+	}
+	@Bean
+	public ArticleRepositoryInterface articleRepository() {
+		return new ArticleMemoryRepository();
+	}	
+	@Bean
+	public DevisServiceInterface devisService(CatalogServiceInterface catalogService) {
+		DevisSimpleService devisSimpleService = new DevisSimpleService();
+		devisSimpleService.setCatalogService(catalogService);
+		return devisSimpleService;
+	}
+}
+```
+
+**net.jmb.tuto.spring.config.contexte2.Contexte2Config**
+> Configuration valable uniquement pour le contexte 2
+
+```java
+@Configuration
+@ConditionalOnProperty(name = "contexte", havingValue = "2")
+@PropertySource(value = "classpath:/application.properties")
+public class Contexte2Config {
+	
+	@Value("${app.contexte2.remise}")
+	int remise = 10;
+	
+	@Bean
+	public CatalogServiceInterface catalogService(ArticleRepositoryInterface articleRepository) {
+		CatalogDetailService catalogDetailService = new CatalogDetailService();
+		catalogDetailService.setArticleRepository(articleRepository);
+		return catalogDetailService;
+	}
+	@Bean
+	public ArticleRepositoryInterface articleRepository() {
+		return new ArticleDatabaseRepository();
+	}	
+	@Bean
+	public DevisServiceInterface devisService(CatalogServiceInterface catalogService, ClientServiceInterface clientService) {
+		DevisRemiseService devisRemiseService = new DevisRemiseService();
+		devisRemiseService.setCatalogService(catalogService);
+		devisRemiseService.setClientService(clientService);
+		devisRemiseService.setRemise(remise);
+		return devisRemiseService;
+	}	
+	@Bean
+	public ClientServiceInterface clientService() {
+		ClientSimpleService clientSimpleService = new ClientSimpleService();
+		return clientSimpleService;
+	}
+}
+```
+
+### 2. Charger le contexte Spring -> classe `@AnnotationConfigApplicationContext`
+
+**net.jmb.tuto.spring.Application**
+
+```java
+public class Application {
+
+	public static void main(String[] args) {
+
+		// L'élement central de la config Spring est la classe ApplicationConfig
+		ApplicationContext applicationContext = new AnnotationConfigApplicationContext(ApplicationConfig.class);
+		...
+}
+```
+
+### 3. Sélectionner les packages à scanner (auto détection des beans) -> annotation `@ComponentScan`
+
+Cette annotation se place sur une classe de configuration et spécifie les packages à scanner.
+Si rien n'est fourni en paramètre, le package en cours et ses sous-packages sont scanné.
+
+C'est le cas dans l'exemple ci-dessous :
+
+```java
+@Configuration
+@ComponentScan
+public class ApplicationConfig 
+```
+
+### 4. Instancier un objet géré dans le conteneur -> annotation `@Bean`
+
+Cette annotation se place sur une méthode qui retourne un objet :
+- L'objet en retour est placé dans le conteneur Spring et candidat pour l'injection en @Autowired
+- Si la méthode a des paramètres, ils sont injectés automatiquement si leur type est une classe gérée par Spring.
+
+Exemple :
+
+```java
+@Bean
+public ArticleController articleController(CatalogServiceInterface catalogService) { ... }
+```
+
+### 5. Accéder à des variables et propriétés -> annotations `@PropertySource` et `@Value`
+
+Les propriétés sont cherchées dans l'environnement Spring (interface `Environment`).
+Cet environnement est alimenté au chargement du contexte Spring avec :
+- les fichiers properties, 
+- les variables d'environnement (JVM ou système),
+- les ressources JNDI,
+- les paramètres du ServletContext pour les webapp
+
+Fonctionnement dans le cas d'un fichier de propriétés :
+- **@PropertySource** se place sur une classe de config et spécifie le chemin vers le fichier de propriété 
+- **@Value("${xxx}")** se place sur une variable (attribut ou paramètre) et lui affecte la valeur de la propriété
+	- On passe en paramètre de cette annotation la chaîne "${xxx}" 
+	- Avec xxx qui représente le nom de la propriété à lire 
+
+Exemple :
+
+```java
+@Configuration
+@PropertySource(value = "classpath:/application.properties")
+public class Contexte2Config {	
+	@Value("${app.contexte2.remise}")
+	int remise = 10;	// 10 est la valeur par défaut 
+```
+
+### 6. Charger la config sous certaines conditions -> Annotation `@ConditionalOnProperty`
+
+Cette annotation se place sur une classe de config ou une méthode.
+Et selon où elle se situe :
+- Elle ne charge la config que si la condition est respectée
+- Elle n'exécute la méthode que si la condition est respectée
+
+Comme ci-dessus la propriété est récupérée dans l'environnement Spring.
+
+Exemple :
+
+```java
+@Configuration
+@ConditionalOnProperty(value = "contexte", matchIfMissing = true, havingValue = "1")
+public class ContexteDefautConfig { ... }
+```
+
+### 7. Quelques autres annotations de configuration utiles
+
+- `@Import` : importe d'autres classes de configuration
+- `@ImportResource` : importe des fichiers de configuration XML
+- `@Profile` : conditionne le chargement de la config à la valeur du profil (propriété `spring.profiles.active` de l'environnement Spring)
+
+
+## Branche 10_scopes
+
+### 1. Considérations sur la portée (scope) des beans Spring
+
+Par défaut, la portée des beans gérés par Spring est singleton.
+C'est-à-dire que pour chaque classe, Spring  n'utilise qu'une seule instance d'objet dans toute l'application.
+
+Cette portée est généralement adaptée car le conteneur Spring gère des classes de traitement.
+- Les classes de traitement ne portent généralement pas d'attributs métiers mais uniquement des méthodes (ou des attributs de config qui ne varient plus une fois initialisés).
+- Il n'y a donc aucun besoin d'avoir plusieurs instances de ces classes. Les instances multiples n'ont de sens que pour distinguer des états d'objets en fonction de leurs attributs.
+
+> Cependant, il est parfois nécessaire de stocker des **données variables dans les objets gérés par Spring**.
+> Dans ce cas, il faut impérativement modifier la portée : L'objet ne peut plus être de type singleton car l'affectation de valeurs à ses attributs peut provoquer des interférences.
+
+
+### 2. Scope Singleton (par défaut)
+
+Exemple de config sur l'interface `CatalogServiceInterface`
+
+** ContexteDefautConfig **
+
+```java
+...
+public class ContexteDefautConfig {
+	
+	@Bean
+	@Scope(scopeName = ConfigurableBeanFactory.SCOPE_SINGLETON) // ou aucun scope : c'est pareil
+	public CatalogServiceInterface catalogService(ArticleRepositoryInterface articleRepository) {
+		CatalogBasicService catalogBasicService = new CatalogBasicService();
+		catalogBasicService.setArticleRepository(articleRepository);
+		return catalogBasicService;
+	}
+```
+
+On rajoute un `sysout` dans les méthodes qui utilisent cette interface
+
+** ArticleController.choisirArticles() **
+
+```java
+...
+	public List<Integer> choisirArticles() {
+
+		if (service != null) {			
+			System.err.println("ArticleController.choisirArticles(): " + service); 
+			...
+```
+
+** DevisSimpleService.calculerDevis() **
+
+```java
+	public Devis calculerDevis(String nomClient, List<Integer> numArticles) {
+		...		
+		// Calcul détail devis par article
+		articlesEtQuantites.forEach((numArticle, quantite) -> {
+			System.err.println("DevisSimpleService.calculerDevis(): " + catalogService);
+			Article article = catalogService.chercherArticle(numArticle);
+			...
+```
+
+A l'exécution, on constate que la référence de l'objet de type `CatalogServiceInterface` est toujours la même
+
+
+### 3. Scope Prototype
+
+Avec ce scope, un nouvel objet est instancié et retourné par Spring à chaque injection ou à chaque appel au conteneur
+
+Exemple de config sur l'interface `CatalogServiceInterface`
+
+** ContexteDefautConfig **
+
+```java
+public class ContexteDefautConfig {
+	
+	@Bean
+	@Scope(
+		scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE 
+	)
+	public CatalogServiceInterface catalogService(ArticleRepositoryInterface articleRepository) {
+		CatalogBasicService catalogBasicService = new CatalogBasicService();
+		catalogBasicService.setArticleRepository(articleRepository);
+		return catalogBasicService;
+	}
+```
+
+A l'exécution, on constate que la référence de l'objet de type `CatalogServiceInterface` :
+- Est différente entre `ArticleController` et `DevisSimpleService`.
+- Mais est identique à chaque utilisation à l'intérieur de `DevisSimpleService`.
+
+> Problème : prototype injecté dans un singleton.
+
+`DevisSimpleService` est un singleton et l'injection de `CatalogServiceInterface` n'est faire qu'une seule fois à sa création.
+Chaque appel de cette interface à l'intérieur du singleton fera toujours référence à la même instance, ce qu'on ne souhaite pas.
+
+### 4. Scope Prototype + proxyMode
+
+Pour résoudre le problème du prototype à l'intérieur du singleton et obtenir une instance différente de `CatalogServiceInterface` à chaque appel, Spring propose l'option `proxyMode`
+
+** ContexteDefautConfig **
+
+```java
+public class ContexteDefautConfig {
+	
+	@Bean
+	@Scope(
+		scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE 
+		, proxyMode = ScopedProxyMode.INTERFACES
+	)
+	public CatalogServiceInterface catalogService(ArticleRepositoryInterface articleRepository) {
+		CatalogBasicService catalogBasicService = new CatalogBasicService();
+		catalogBasicService.setArticleRepository(articleRepository);
+		return catalogBasicService;
+	}
+```
+
+A l'exécution, on constate que la référence de l'objet de type `CatalogServiceInterface` est différente à chaque utilisation.
